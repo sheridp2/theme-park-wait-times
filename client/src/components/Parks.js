@@ -13,42 +13,39 @@ import { red } from "@material-ui/core/colors";
 import { rideImages, rideMP4 } from "./rideImages";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 345,
-  },
   header: {
     minHeight: 70,
+    [theme.breakpoints.down("xs")]: {
+      paddingBottom: 2,
+    },
   },
   media: {
     height: 0,
     minWidth: 345,
     paddingTop: "56.25%", // 16:9
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
   },
-  expand: {
-    transform: "rotate(0deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: "rotate(180deg)",
+  media_mp4: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
   },
   avatar: {
     backgroundColor: "#113CCF",
+  },
+  footer: {
+    paddingTop: "0",
   },
 }));
 
 function Parks() {
   const classes = useStyles();
-  const [expanded, setExpanded] = useState(false);
   const [parkData, setParkData] = useState([]);
   const [operatingRides, setOperatingRides] = useState([]);
   const [closedRides, setClosedRides] = useState([]);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  const [parkHours, setParkHours] = useState([]);
 
   useEffect(() => {
     const closedRidesArray = [];
@@ -70,12 +67,17 @@ function Parks() {
         setClosedRides(closedRidesArray);
         setParkData(res.data);
       });
+    axios
+      .get("http://localhost:3001/disneyworld-magickingdom-parkhours")
+      .then((res) => {
+        console.log(res.data);
+      });
   }, []);
 
   const openRideList = _.orderBy(operatingRides, ["waitTime"], ["desc"]).map(
     (ride) => {
       return (
-        <Grid item md={3} key={ride.id}>
+        <Grid item xs={12} sm={6} md={3} key={ride.id}>
           <Card className={classes.root}>
             <CardHeader
               className={classes.header}
@@ -89,7 +91,7 @@ function Parks() {
             />
             {rideMP4[ride.name] ? (
               <CardMedia
-                className="me-media-cinemagraph no-media-autotrack me-lazy-loaded"
+                className={`me-media-cinemagraph no-media-autotrack me-lazy-loaded ${classes.media_mp4}`}
                 autoPlay
                 loop
                 component="video"
@@ -101,8 +103,8 @@ function Parks() {
                 image={rideImages[ride.name]}
               />
             )}
-            <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
+            <CardContent className={classes.footer}>
+              <Typography variant="body2" color="textSecondary">
                 Type: {ride.meta.type}
                 <br />
                 Current Wait Time: {ride.waitTime} mins
