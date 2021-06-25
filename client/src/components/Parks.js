@@ -9,7 +9,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import { red } from "@material-ui/core/colors";
 import { rideImages, rideMP4 } from "./rideImages";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +45,8 @@ function Parks() {
   const [operatingRides, setOperatingRides] = useState([]);
   const [closedRides, setClosedRides] = useState([]);
   const [parkHours, setParkHours] = useState([]);
+  const [openingTime, setOpeningTime] = useState([]);
+  const [closingTime, setClosingTime] = useState([]);
 
   useEffect(() => {
     const closedRidesArray = [];
@@ -70,7 +71,10 @@ function Parks() {
     axios
       .get("http://localhost:3001/disneyworld-magickingdom-parkhours")
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data[0]);
+        setParkHours(res.data[0]);
+        setOpeningTime(res.data[0].openingTime.split("T")[1].split("-")[0]);
+        setClosingTime(res.data[0].closingTime.split("T")[1].split("-")[0]);
       });
   }, []);
 
@@ -142,7 +146,10 @@ function Parks() {
             ) : (
               <CardMedia
                 className={classes.media}
-                image={rideImages[ride.name]}
+                image={
+                  rideImages[ride.name] ||
+                  "https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png"
+                }
               />
             )}
             <CardContent>
@@ -161,6 +168,9 @@ function Parks() {
     <div>
       <div>
         <h1>Wait Times: Disney World</h1>
+        <h2>
+          Date: {parkHours.date} Hours: {openingTime} - {closingTime}
+        </h2>
         <h2>Operating Rides</h2>
         <Grid container spacing={2}>
           {openRideList}
