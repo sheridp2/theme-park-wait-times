@@ -71,7 +71,7 @@ function Parks() {
     axios
       .get("http://localhost:3001/disneyworld-magickingdom-parkhours")
       .then((res) => {
-        console.log(res.data[0]);
+        // console.log(res.data[0]);
         setParkHours(res.data[0]);
         setOpeningTime(res.data[0].openingTime.split("T")[1].split("-")[0]);
         setClosingTime(res.data[0].closingTime.split("T")[1].split("-")[0]);
