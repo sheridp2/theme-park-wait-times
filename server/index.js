@@ -1,27 +1,25 @@
+require("dotenv").config();
 const express = require("express");
-
 const cors = require("cors");
-const mongoose = require("mongoose");
-const { mongoURI } = require("./config/keys");
-
 require("./models/WaitTimes");
-
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-});
-
+const connectDB = require("./config/db");
 const app = express();
-const port = process.env.PORT || 3001;
+
+const Themeparks = require("themeparks");
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "*",
+    methhods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
-// app.use(cors());
+
+connectDB();
 
 require("./routes/waitTimesRoutes")(app);
-
-//DB start
-const uri = mongoURI;
 
 function sortRides(key) {
   return function (a, b) {
@@ -29,10 +27,7 @@ function sortRides(key) {
   };
 }
 
-app.get("/disneyworld-magickingdom-parkhours", (req, res) => {
-  DisneyWorldMagicKingdom.GetOpeningTimes().then((parkHours) => {
-    res.send(parkHours);
-  });
-});
 
-app.listen(port);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
