@@ -1,21 +1,32 @@
 const mongoose = require("mongoose");
 const Themeparks = require("themeparks");
-const moment = require("moment");
 
 const waitTimes = mongoose.model("waitTimes");
 
 module.exports = (app) => {
-  const DisneyWorldMagicKingdom =
-    new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
-    app.get("/disneyworld-magickingdom-waittimes", async (req, res) => {
-      DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
+  const DisneyWorldMagicKingdom = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
+  const DisneyEpcot = new Themeparks.Parks.WaltDisneyWorldEpcot();
+
+  app.get("/disneyworld-magickingdom-waittimes", async (req, res) => {
+    DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
       res.send(parkHours);
     });
-    })
+  });
 
-
-    app.get("/disneyworld-magickingdom-parkhours", (req, res) => {
+  app.get("/disneyworld-magickingdom-parkhours", (req, res) => {
     DisneyWorldMagicKingdom.GetOpeningTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+  app.get("/disneyworld-epcot-waittimes", async (req, res) => {
+    DisneyEpcot.GetWaitTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+  app.get("/disneyworld-epcot-parkhours", (req, res) => {
+    DisneyEpcot.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
@@ -89,8 +100,6 @@ module.exports = (app) => {
   //     res.send(400, err);
   //   }
   // });
-
-  
 };
 
 function filterRides(responseData) {
