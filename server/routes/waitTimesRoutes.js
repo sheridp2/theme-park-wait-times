@@ -6,6 +6,7 @@ const waitTimes = mongoose.model("waitTimes");
 module.exports = (app) => {
   const DisneyWorldMagicKingdom = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
   const DisneyEpcot = new Themeparks.Parks.WaltDisneyWorldEpcot();
+  const DisneyAnimalKingdom = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
 
   app.get("/disneyworld-magickingdom-waittimes", async (req, res) => {
     DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
@@ -27,6 +28,18 @@ module.exports = (app) => {
 
   app.get("/disneyworld-epcot-parkhours", (req, res) => {
     DisneyEpcot.GetOpeningTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+  app.get("/disneyworld-animalkingdom-waittimes", async (req, res) => {
+    DisneyAnimalKingdom.GetWaitTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+  app.get("/disneyworld-animalkingdom-parkhours", (req, res) => {
+    DisneyAnimalKingdom.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
