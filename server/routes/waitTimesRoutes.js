@@ -7,6 +7,7 @@ module.exports = (app) => {
   const DisneyWorldMagicKingdom = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
   const DisneyEpcot = new Themeparks.Parks.WaltDisneyWorldEpcot();
   const DisneyAnimalKingdom = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
+  const DisneyHollywoodStudios = new Themeparks.Parks.WaltDisneyWorldHollywoodStudios();
 
   app.get("/disneyworld-magickingdom-waittimes", async (req, res) => {
     DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
@@ -40,6 +41,18 @@ module.exports = (app) => {
 
   app.get("/disneyworld-animalkingdom-parkhours", (req, res) => {
     DisneyAnimalKingdom.GetOpeningTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+   app.get("/disneyworld-hollywoodstudios-waittimes", async (req, res) => {
+    DisneyHollywoodStudios.GetWaitTimes().then((parkHours) => {
+      res.send(parkHours);
+    });
+  });
+
+  app.get("/disneyworld-hollywoodstudios-parkhours", (req, res) => {
+    DisneyHollywoodStudios.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
