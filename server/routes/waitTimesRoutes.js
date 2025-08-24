@@ -9,55 +9,55 @@ module.exports = (app) => {
   const DisneyAnimalKingdom = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
   const DisneyHollywoodStudios = new Themeparks.Parks.WaltDisneyWorldHollywoodStudios();
 
-  app.get("/disneyworld-magickingdom-waittimes", async (req, res) => {
+  app.get("/magickingdom-waittimes", async (req, res) => {
     DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-magickingdom-parkhours", (req, res) => {
+  app.get("/magickingdom-parkhours", (req, res) => {
     DisneyWorldMagicKingdom.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-epcot-waittimes", async (req, res) => {
+  app.get("/epcot-waittimes", async (req, res) => {
     DisneyEpcot.GetWaitTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-epcot-parkhours", (req, res) => {
+  app.get("/epcot-parkhours", (req, res) => {
     DisneyEpcot.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-animalkingdom-waittimes", async (req, res) => {
+  app.get("/animalkingdom-waittimes", async (req, res) => {
     DisneyAnimalKingdom.GetWaitTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-animalkingdom-parkhours", (req, res) => {
+  app.get("/animalkingdom-parkhours", (req, res) => {
     DisneyAnimalKingdom.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-   app.get("/disneyworld-hollywoodstudios-waittimes", async (req, res) => {
+   app.get("/hollywoodstudios-waittimes", async (req, res) => {
     DisneyHollywoodStudios.GetWaitTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  app.get("/disneyworld-hollywoodstudios-parkhours", (req, res) => {
+  app.get("/hollywoodstudios-parkhours", (req, res) => {
     DisneyHollywoodStudios.GetOpeningTimes().then((parkHours) => {
       res.send(parkHours);
     });
   });
 
-  // app.get("/disneyworld-magickingdom-waittimes/:date", async (req, res) => {
+  // app.get("/magickingdom-waittimes/:date", async (req, res) => {
   //   async function search(date) {
   //     const query = { todaysDate: date };
   //     const returnedData = await waitTimes.findOne(query);
