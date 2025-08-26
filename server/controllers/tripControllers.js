@@ -5,7 +5,6 @@ exports.addTrip = async (req, res) => {
 
   try {
     const { tripName, park, startDate, endDate } = req.body;
-    console.log(req.body)
 
     if (!tripName || !park || !startDate || !endDate) {
       return res.status(400).json({ message: "All fields are required" });
@@ -27,7 +26,6 @@ exports.addTrip = async (req, res) => {
 };
 
 exports.getAllTrip = async (req, res) => {
-  console.log(req)
   const userId = req.user.id;
 
   try {
@@ -41,7 +39,7 @@ exports.getAllTrip = async (req, res) => {
 exports.deleteTrip = async (req, res) => {
   try {
     await Trip.findByIdAndDelete(req.params.id);
-    res.json({ message: "Trip deleted successfully " });
+    res.json({ message: "Trip deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }

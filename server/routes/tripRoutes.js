@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/add", protect, addTrip);
 router.get("/getAll", protect, getAllTrip);
-router.delete("/:id", protect, deleteTrip);
+router.delete("/delete/:id", protect, deleteTrip);
 
 module.exports = router;
