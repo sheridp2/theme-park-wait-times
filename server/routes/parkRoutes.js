@@ -8,6 +8,7 @@ const DisneyEpcot = new Themeparks.Parks.WaltDisneyWorldEpcot();
 const DisneyAnimalKingdom = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
 const DisneyHollywoodStudios = new Themeparks.Parks.WaltDisneyWorldHollywoodStudios();
 const DisneyDisneyland = new Themeparks.Parks.DisneylandResortMagicKingdom();
+const CaliforniaAdventure = new Themeparks.Parks.DisneylandResortCaliforniaAdventure();
 
 router.get("/magickingdom-waittimes", async (req, res) => {
   DisneyWorldMagicKingdom.GetWaitTimes().then((parkHours) => {
@@ -65,6 +66,18 @@ router.get("/disneyland-waittimes", async (req, res) => {
 
 router.get("/disneyland-parkhours", (req, res) => {
   DisneyDisneyland.GetOpeningTimes().then((parkHours) => {
+    res.send(parkHours);
+  });
+});
+
+router.get("/californiaadventure-waittimes", async (req, res) => {
+  CaliforniaAdventure.GetWaitTimes().then((parkHours) => {
+    res.send(parkHours);
+  });
+});
+
+router.get("/californiaadventure-parkhours", (req, res) => {
+  CaliforniaAdventure.GetOpeningTimes().then((parkHours) => {
     res.send(parkHours);
   });
 });
