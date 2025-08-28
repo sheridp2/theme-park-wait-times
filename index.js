@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const parkRoutes = require("./routes/parkRoutes");
 const tripRoutes = require("./routes/tripRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use("/waittimes", parkRoutes);
 app.use("/auth", authRoutes);
 
 app.use("/trip", tripRoutes);
+
+app.use("/favorites", favoriteRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
