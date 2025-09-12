@@ -81,8 +81,8 @@ exports.deleteFavorite = async (req, res) => {
 
   try {
     const deletedFavorite = await Favorites.findOneAndUpdate(
-      { userId, park, "favorites._id": id },
-      { $pull: { favorites: { _id: id } } },
+      { userId, "parks.park": park },
+      { $pull: { "parks.$.favorites": { _id: id } } },
       { new: true }
     );
 
