@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Favorites = require("../models/Favorites"); // Add this at the top
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "6h" });
@@ -28,8 +29,22 @@ exports.registerUser = async (req, res) => {
       icon
     });
 
+    // Add this block after user is created:
+    const parks = [
+      "Magic-Kingdom",
+      "Epcot",
+      "Animal-Kingdom",
+      "Hollywood-Studios",
+      "Disneyland",
+      "California-Adventure"
+    ];
+    await Favorites.create({
+      userId: user._id,
+      parks: parks.map(park => ({ park, favorites: [] }))
+    });
+
     res.status(201).json({
-      id: user._id.user,
+      id: user._id,
       user,
       token: generateToken(user._id),
     });
