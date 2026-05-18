@@ -36,7 +36,8 @@ exports.registerUser = async (req, res) => {
       "Animal-Kingdom",
       "Hollywood-Studios",
       "Disneyland",
-      "California-Adventure"
+      "California-Adventure",
+      "Universal-Studios-Florida",
     ];
     await Favorites.create({
       userId: user._id,
