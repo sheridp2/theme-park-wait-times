@@ -24,7 +24,10 @@ const DESTINATION_PARKS = [
   ],
   [
     "universalorlando",
-    [["universalstudiosflorida", "Universal Studios Florida"]],
+    [
+      ["universalstudiosflorida", "Universal Studios Florida"],
+      ["islandsofadventure", "Islands of Adventure"],
+    ],
   ],
 ];
 
@@ -192,6 +195,18 @@ router.get("/universalstudiosflorida-waittimes", async (req, res) => {
   }
 });
 
+router.get("/islandsofadventure-waittimes", async (req, res) => {
+  await ready;
+  const id = requirePark("islandsofadventure", res);
+  if (!id) return;
+  try {
+    const live = await tp.entity(id).live();
+    res.json((live.liveData ?? []).map(normalizeLiveEntry));
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
 // ── Park hours ───────────────────────────────────────────────────────────────
 
 function scheduleRange(id) {
@@ -270,6 +285,17 @@ router.get("/californiaadventure-parkhours", async (req, res) => {
 router.get("/universalstudiosflorida-parkhours", async (req, res) => {
   await ready;
   const id = requirePark("universalstudiosflorida", res);
+  if (!id) return;
+  try {
+    res.json(await scheduleRange(id));
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
+router.get("/islandsofadventure-parkhours", async (req, res) => {
+  await ready;
+  const id = requirePark("islandsofadventure", res);
   if (!id) return;
   try {
     res.json(await scheduleRange(id));
