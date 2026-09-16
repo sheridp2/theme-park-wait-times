@@ -229,12 +229,45 @@ function scheduleRange(id) {
   return tp.entity(id).schedule.range(today, week);
 }
 
+const SPECIAL_TYPE_LABELS = {
+  TICKETED_EVENT: "Special Ticketed Event",
+  PRIVATE_EVENT: "Private Event",
+};
+
+// v7 schedule.range() returns a flat array of {date, openingTime, closingTime, type}
+// entries, with multiple entries sharing the same date when a special event or extra
+// hours entry applies. Group them by date so the frontend gets one entry per day with
+// the operating hours, special events, and early entry hours pulled apart by type.
+function normalizeSchedule(entries) {
+  const byDate = new Map();
+  for (const entry of entries ?? []) {
+    if (!byDate.has(entry.date)) {
+      byDate.set(entry.date, {
+        date: entry.date,
+        operating: null,
+        specialEvents: [],
+        extraHours: [],
+      });
+    }
+    const day = byDate.get(entry.date);
+    const hours = { openingTime: entry.openingTime, closingTime: entry.closingTime };
+    if (entry.type === "OPERATING") {
+      day.operating = hours;
+    } else if (entry.type === "EXTRA_HOURS") {
+      day.extraHours.push({ type: "Early Entry", ...hours });
+    } else if (entry.type === "TICKETED_EVENT" || entry.type === "PRIVATE_EVENT") {
+      day.specialEvents.push({ type: SPECIAL_TYPE_LABELS[entry.type] ?? entry.type, ...hours });
+    }
+  }
+  return Array.from(byDate.values()).sort((a, b) => a.date.localeCompare(b.date));
+}
+
 router.get("/magickingdom-parkhours", async (req, res) => {
   await ready;
   const id = requirePark("magickingdom", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -245,7 +278,7 @@ router.get("/epcot-parkhours", async (req, res) => {
   const id = requirePark("epcot", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -256,7 +289,7 @@ router.get("/hollywoodstudios-parkhours", async (req, res) => {
   const id = requirePark("hollywoodstudios", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -267,7 +300,7 @@ router.get("/animalkingdom-parkhours", async (req, res) => {
   const id = requirePark("animalkingdom", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -278,7 +311,7 @@ router.get("/disneyland-parkhours", async (req, res) => {
   const id = requirePark("disneyland", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -289,7 +322,7 @@ router.get("/californiaadventure-parkhours", async (req, res) => {
   const id = requirePark("californiaadventure", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -300,7 +333,7 @@ router.get("/universalstudiosflorida-parkhours", async (req, res) => {
   const id = requirePark("universalstudiosflorida", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -311,7 +344,7 @@ router.get("/islandsofadventure-parkhours", async (req, res) => {
   const id = requirePark("islandsofadventure", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
@@ -322,7 +355,7 @@ router.get("/epicuniverse-parkhours", async (req, res) => {
   const id = requirePark("epicuniverse", res);
   if (!id) return;
   try {
-    res.json(await scheduleRange(id));
+    res.json(normalizeSchedule(await scheduleRange(id)));
   } catch (err) {
     res.status(502).json({ error: err.message });
   }
