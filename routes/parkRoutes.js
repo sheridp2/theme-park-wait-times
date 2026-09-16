@@ -229,15 +229,16 @@ function scheduleRange(id) {
   return tp.entity(id).schedule.range(today, week);
 }
 
-const SPECIAL_TYPE_LABELS = {
-  TICKETED_EVENT: "Special Ticketed Event",
-  PRIVATE_EVENT: "Private Event",
-};
+// The API lumps free extra-hours windows (early morning entry, extended evening)
+// and real paid events (Halloween Horror Nights, after-hours parties) under the
+// same type: "TICKETED_EVENT". The only thing that tells them apart is `description`.
+const EXTRA_HOURS_DESCRIPTIONS = new Set(["Early Entry", "Extended Evening"]);
 
-// v7 schedule.range() returns a flat array of {date, openingTime, closingTime, type}
-// entries, with multiple entries sharing the same date when a special event or extra
-// hours entry applies. Group them by date so the frontend gets one entry per day with
-// the operating hours, special events, and early entry hours pulled apart by type.
+// v7 schedule.range() returns a flat array of {date, openingTime, closingTime, type,
+// description} entries, with multiple entries sharing the same date when a special
+// event or extra hours entry applies. Group them by date so the frontend gets one
+// entry per day with the operating hours, special events, and extra hours pulled
+// apart by their actual description, not just the (unreliable) type field.
 function normalizeSchedule(entries) {
   const byDate = new Map();
   for (const entry of entries ?? []) {
@@ -254,9 +255,14 @@ function normalizeSchedule(entries) {
     if (entry.type === "OPERATING") {
       day.operating = hours;
     } else if (entry.type === "EXTRA_HOURS") {
-      day.extraHours.push({ type: "Early Entry", ...hours });
+      day.extraHours.push({ type: entry.description ?? "Early Entry", ...hours });
+    } else if (entry.type === "TICKETED_EVENT" && EXTRA_HOURS_DESCRIPTIONS.has(entry.description)) {
+      day.extraHours.push({ type: entry.description, ...hours });
     } else if (entry.type === "TICKETED_EVENT" || entry.type === "PRIVATE_EVENT") {
-      day.specialEvents.push({ type: SPECIAL_TYPE_LABELS[entry.type] ?? entry.type, ...hours });
+      day.specialEvents.push({
+        type: entry.description ?? (entry.type === "PRIVATE_EVENT" ? "Private Event" : "Special Ticketed Event"),
+        ...hours,
+      });
     }
   }
   return Array.from(byDate.values()).sort((a, b) => a.date.localeCompare(b.date));
